@@ -12,9 +12,9 @@ function Navbar() {
 
   return (
     <div>
-      <div className="px-[111px] py-[76px] font-inknut flex justify-between items-center">
+      <div className="px-[20px] md:px-[111px] py-[20px] md:py-[76px] font-inknut flex justify-between items-center">
         {/* Logo */}
-        <div className="text-[36px] font-inknut font-bold text-[#FFA13B]">
+        <div className="text-[24px] sm:text-[36px] font-inknut font-bold text-[#FFA13B]">
           UltraFitness
         </div>
 

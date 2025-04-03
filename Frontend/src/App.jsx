@@ -6,6 +6,7 @@ const App = () => {
   return (
     <>
       <div
+        className="relative" // Ensure it's positioned correctly for layering
         style={{
           backgroundImage: "url('/Hero_image.png')", // Correct image path
           backgroundSize: "cover", // Ensures the image covers the entire container without distortion
