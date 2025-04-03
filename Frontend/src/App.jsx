@@ -1,6 +1,7 @@
 import Herosection from "./Components/herosection";
 import Navbar from "./Components/navbar";
 import Offersection from "./Components/offersection";
+import TestimonialsSection from "./Components/Testimonials";
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
       >
         <Herosection />
         <Offersection />
+        <TestimonialsSection />
       </div>
     </>
   );

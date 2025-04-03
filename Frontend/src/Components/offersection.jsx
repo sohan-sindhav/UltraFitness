@@ -6,22 +6,22 @@ function Offersection() {
       title: "Yoga",
       description:
         "Improve flexibility and mindfulness with our expert-led yoga classes",
-      image: "./src/assets/yoga.jpg",
+      image: "/assets/yoga.jpg", // Note the leading slash
     },
     {
       title: "Strength Training",
       description: "Build muscle and power with our weight training programs",
-      image: "./src/assets/ST.jpg",
+      image: "/assets/ST.jpg",
     },
     {
       title: "Aerobics",
       description: "High-energy cardio workouts to boost your endurance",
-      image: "./src/assets/Aerobics.jpg",
+      image: "/assets/Aerobics.jpg",
     },
     {
       title: "Zumba",
       description: "Dance your way to fitness with our fun Zumba sessions",
-      image: "./src/assets/Zumba.jpg",
+      image: "/assets/Zumba.jpg",
     },
   ];
 
