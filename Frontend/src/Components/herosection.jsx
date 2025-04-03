@@ -22,7 +22,7 @@ function Herosection() {
 
         {/* Hero Section Title with Animation */}
         <motion.div
-          className="text-[64px] px-[111px] py-[50px] mt-50 font-josefin text-white font-extrabold"
+          className="text-[48px] sm:text-[36px] lg:text-[72px] px-[20px] sm:px-[50px] md:px-[111px] py-[50px] mt-50 font-josefin text-white font-extrabold"
           initial={{ opacity: 0, x: -100 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1 }}
@@ -35,20 +35,20 @@ function Herosection() {
 
         {/* Hero Section Paragraph with Darker Background */}
         <motion.div
-          className="relative text-[20px] px-[111px] py-[15px] mt-50 font-josefin text-white"
+          className="relative text-[20px] sm:text-[18px] px-[20px] sm:px-[50px] md:px-[111px] py-[15px] mt-50 font-josefin text-white"
           initial={{ opacity: 0, x: -100 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1 }}
         >
           {/* Dark background behind paragraph */}
-          <p className="max-w-[calc(100%_-_750px)] bg-black bg-opacity-50 rounded-3xl mx-3">
+          <p className="max-w-[calc(100%_-_50px)] sm:max-w-[calc(100%_-_100px)] md:max-w-[calc(100%_-_750px)] bg-black bg-opacity-50 rounded-3xl mx-3">
             It doesn’t matter if your goal is to get stronger, burn fat, or to
             just stay fit our world class coaches will guide you every step of
             the way.
           </p>
 
           {/* Contact Us Button with Hover Effect */}
-          <button className="bg-[#FFA13B] mx-3 my-6 p-3 rounded-2xl text-black font-josefin font-semibold border-2 border-transparent transition duration-300 ease-in-out hover:bg-transparent hover:text-white hover:border-white hover:opacity-80">
+          <button className="bg-[#FFA13B] mx-3 my-6 p-3 sm:p-2 md:p-3 rounded-2xl text-black font-josefin font-semibold border-2 border-transparent transition duration-300 ease-in-out hover:bg-transparent hover:text-white hover:border-white hover:opacity-80">
             Contact Us
           </button>
         </motion.div>
