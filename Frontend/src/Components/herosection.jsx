@@ -12,7 +12,7 @@ function Herosection() {
 
   return (
     <div className="overflow-x-hidden">
-      {/* Regular Navbar (no longer fixed) */}
+      {/* Regular Navbar */}
       <div className="w-full bg-black">
         <div className="px-[20px] md:px-[111px] py-[20px] md:py-[25px] font-inknut flex justify-between items-center">
           {/* Logo */}
@@ -32,29 +32,16 @@ function Herosection() {
             ))}
           </div>
 
-          {/* Mobile Hamburger Icon */}
-          <div className="md:hidden z-50" onClick={toggleMobileMenu}>
-            <div className="flex flex-col justify-center items-center space-y-2 cursor-pointer">
-              <motion.div
-                animate={{
-                  rotate: isMobileMenuOpen ? 45 : 0,
-                  y: isMobileMenuOpen ? 8 : 0,
-                }}
-                className="w-6 h-1 bg-white"
-              ></motion.div>
-              <motion.div
-                animate={{ opacity: isMobileMenuOpen ? 0 : 1 }}
-                className="w-6 h-1 bg-white"
-              ></motion.div>
-              <motion.div
-                animate={{
-                  rotate: isMobileMenuOpen ? -45 : 0,
-                  y: isMobileMenuOpen ? -8 : 0,
-                }}
-                className="w-6 h-1 bg-white"
-              ></motion.div>
+          {/* Mobile Hamburger Icon - Only shows when menu is closed */}
+          {!isMobileMenuOpen && (
+            <div className="md:hidden z-50" onClick={toggleMobileMenu}>
+              <div className="flex flex-col justify-center items-center space-y-2 cursor-pointer">
+                <div className="w-6 h-1 bg-white"></div>
+                <div className="w-6 h-1 bg-white"></div>
+                <div className="w-6 h-1 bg-white"></div>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
@@ -71,7 +58,7 @@ function Herosection() {
             {/* Gradient Background */}
             <div className="absolute inset-0 bg-gradient-to-br from-black via-[#1a120a] to-[#332211] opacity-95"></div>
 
-            {/* Close Button */}
+            {/* Single Close Button */}
             <button
               onClick={toggleMobileMenu}
               className="absolute top-6 right-6 text-white z-50"
