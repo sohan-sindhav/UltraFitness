@@ -1,60 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
 
 function Herosection() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isNavbarVisible, setIsNavbarVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
   const elements = ["Home", "Gallery", "Reviews", "Contact Us"];
 
   const toggleMobileMenu = () => {
-    const newState = !isMobileMenuOpen;
-    setIsMobileMenuOpen(newState);
-
-    // Force hide navbar when opening menu
-    if (newState) {
-      setIsNavbarVisible(false);
-    }
-    // When closing menu, let scroll handler manage navbar visibility
+    setIsMobileMenuOpen(!isMobileMenuOpen);
   };
-
-  useEffect(() => {
-    const handleScroll = () => {
-      // Don't process scroll events when menu is open
-      if (isMobileMenuOpen) return;
-
-      const currentScrollY = window.scrollY;
-
-      // Always show at top of page
-      if (currentScrollY <= 10) {
-        setIsNavbarVisible(true);
-        return;
-      }
-
-      // Hide when scrolling down past threshold, show when scrolling up
-      if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        setIsNavbarVisible(false);
-      } else if (currentScrollY < lastScrollY) {
-        setIsNavbarVisible(true);
-      }
-
-      setLastScrollY(currentScrollY);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY, isMobileMenuOpen]);
 
   return (
     <div className="overflow-x-hidden">
-      {/* Navbar - Hide on scroll down, show on scroll up */}
-      <motion.div
-        className={`fixed w-full bg-black transition-transform duration-300 ${
-          isMobileMenuOpen ? "z-30" : "z-50"
-        } ${isNavbarVisible ? "translate-y-0" : "-translate-y-full"}`}
-        initial={{ y: 0 }}
-      >
+      {/* Regular Navbar (no longer fixed) */}
+      <div className="w-full bg-black">
         <div className="px-[20px] md:px-[111px] py-[20px] md:py-[25px] font-inknut flex justify-between items-center">
           {/* Logo */}
           <div className="text-[24px] sm:text-[36px] font-bold text-[#FFA13B]">
@@ -97,7 +56,7 @@ function Herosection() {
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* Enhanced Mobile Menu */}
       <AnimatePresence>
@@ -107,7 +66,7 @@ function Herosection() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-40" // Higher z-index than navbar
+            className="fixed inset-0 z-40"
           >
             {/* Gradient Background */}
             <div className="absolute inset-0 bg-gradient-to-br from-black via-[#1a120a] to-[#332211] opacity-95"></div>
@@ -205,7 +164,7 @@ function Herosection() {
       </AnimatePresence>
 
       {/* Hero Section */}
-      <div className="pt-20">
+      <div>
         <div
           className="relative"
           style={{
