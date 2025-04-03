@@ -16,7 +16,6 @@ const App = () => {
           minHeight: "100vh", // Ensures the div takes at least the full viewport height
         }}
       >
-        <Navbar />
         <Herosection />
         <Offersection />
       </div>
