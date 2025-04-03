@@ -12,30 +12,30 @@ function Herosection() {
     const newState = !isMobileMenuOpen;
     setIsMobileMenuOpen(newState);
 
-    // Hide navbar when opening mobile menu
+    // Force hide navbar when opening menu
     if (newState) {
       setIsNavbarVisible(false);
-    } else {
-      // When closing mobile menu, check scroll position
-      setIsNavbarVisible(window.scrollY <= 10);
     }
+    // When closing menu, let scroll handler manage navbar visibility
   };
 
   useEffect(() => {
     const handleScroll = () => {
-      // Don't hide/show navbar if mobile menu is open
+      // Don't process scroll events when menu is open
       if (isMobileMenuOpen) return;
 
       const currentScrollY = window.scrollY;
 
+      // Always show at top of page
       if (currentScrollY <= 10) {
         setIsNavbarVisible(true);
         return;
       }
 
-      if (currentScrollY > lastScrollY) {
+      // Hide when scrolling down past threshold, show when scrolling up
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
         setIsNavbarVisible(false);
-      } else {
+      } else if (currentScrollY < lastScrollY) {
         setIsNavbarVisible(true);
       }
 
@@ -50,9 +50,9 @@ function Herosection() {
     <div className="overflow-x-hidden">
       {/* Navbar - Hide on scroll down, show on scroll up */}
       <motion.div
-        className={`fixed w-full bg-black z-50 transition-transform duration-300 ${
-          isNavbarVisible ? "translate-y-0" : "-translate-y-full"
-        }`}
+        className={`fixed w-full bg-black transition-transform duration-300 ${
+          isMobileMenuOpen ? "z-30" : "z-50"
+        } ${isNavbarVisible ? "translate-y-0" : "-translate-y-full"}`}
         initial={{ y: 0 }}
       >
         <div className="px-[20px] md:px-[111px] py-[20px] md:py-[25px] font-inknut flex justify-between items-center">
@@ -107,7 +107,7 @@ function Herosection() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-40"
+            className="fixed inset-0 z-40" // Higher z-index than navbar
           >
             {/* Gradient Background */}
             <div className="absolute inset-0 bg-gradient-to-br from-black via-[#1a120a] to-[#332211] opacity-95"></div>
@@ -206,8 +206,6 @@ function Herosection() {
 
       {/* Hero Section */}
       <div className="pt-20">
-        {" "}
-        {/* Add padding to account for fixed navbar */}
         <div
           className="relative"
           style={{
