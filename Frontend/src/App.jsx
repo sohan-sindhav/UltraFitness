@@ -1,27 +1,48 @@
-import Herosection from "./Components/herosection";
-import Navbar from "./Components/navbar";
-import Offersection from "./Components/offersection";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import HeroSection from "./Components/herosection";
+import GallerySection from "./Components/GallerySection"; // Updated import
+import ContactSection from "./Components/location";
+import OfferSection from "./Components/offersection";
 import TestimonialsSection from "./Components/Testimonials";
+import ScheduleSection from "./Components/Timetable";
+import Navbar from "./Components/navbar";
 
 const App = () => {
   return (
-    <>
-      <div
-        className="relative" // Ensure it's positioned correctly for layering
-        style={{
-          backgroundImage: "url('/Hero_image.png')", // Correct image path
-          backgroundSize: "cover", // Ensures the image covers the entire container without distortion
-          backgroundPosition: "center", // Keeps the image centered
-          backgroundAttachment: "fixed", // Keeps the background fixed while scrolling
-          backgroundRepeat: "no-repeat", // Prevents the image from repeating
-          minHeight: "100vh", // Ensures the div takes at least the full viewport height
-        }}
-      >
-        <Herosection />
-        <Offersection />
-        <TestimonialsSection />
-      </div>
-    </>
+    <Router>
+      <Navbar />
+      <Routes>
+        {/* Home route with all sections */}
+        <Route
+          path="/"
+          element={
+            <div
+              className="relative"
+              style={{
+                backgroundImage: "url('/Hero_image.png')",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundAttachment: "fixed",
+                backgroundRepeat: "no-repeat",
+                minHeight: "100vh",
+              }}
+            >
+              <HeroSection />
+              <OfferSection />
+              <TestimonialsSection />
+              <ScheduleSection />
+              <ContactSection />
+            </div>
+          }
+        />
+
+        {/* Gallery route */}
+        <Route path="/gallery" element={<GallerySection />} />
+
+        {/* Add other routes as needed */}
+        {/* <Route path="/contact" element={<ContactPage />} /> */}
+      </Routes>
+    </Router>
   );
 };
 
