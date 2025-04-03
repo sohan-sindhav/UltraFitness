@@ -22,15 +22,18 @@ function Herosection() {
 
         {/* Hero Section Title with Animation */}
         <motion.div
-          className="text-[48px] sm:text-[36px] lg:text-[72px] px-[20px] sm:px-[50px] md:px-[111px] py-[50px] mt-50 font-josefin text-white font-extrabold"
+          className="relative z-10 text-[40px] sm:text-[36px] lg:text-[72px] px-[20px] sm:px-[50px] md:px-[111px] py-[50px] mt-50 font-josefin text-white font-extrabold"
           initial={{ opacity: 0, x: -100 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1 }}
         >
-          <p>
-            Unleash Your <span className="text-[#FFA13B]">Strength</span>
-          </p>
-          <p>Transform Your Life.</p>
+          {/* Add text-center for small screens (mobile) */}
+          <div className="bg-black bg-opacity-60 p-4 rounded-xl">
+            <p className="text-center sm:text-left">
+              Unleash Your <span className="text-[#FFA13B]">Strength</span>
+            </p>
+            <p className="text-center sm:text-left">Transform Your Life.</p>
+          </div>
         </motion.div>
 
         {/* Hero Section Paragraph with Darker Background */}
