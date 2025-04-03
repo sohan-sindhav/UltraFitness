@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
 
-// In your JSX:
-
 function Herosection() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isNavbarVisible, setIsNavbarVisible] = useState(true);
@@ -11,11 +9,23 @@ function Herosection() {
   const elements = ["Home", "Gallery", "Reviews", "Contact Us"];
 
   const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
+    const newState = !isMobileMenuOpen;
+    setIsMobileMenuOpen(newState);
+
+    // Hide navbar when opening mobile menu
+    if (newState) {
+      setIsNavbarVisible(false);
+    } else {
+      // When closing mobile menu, check scroll position
+      setIsNavbarVisible(window.scrollY <= 10);
+    }
   };
 
   useEffect(() => {
     const handleScroll = () => {
+      // Don't hide/show navbar if mobile menu is open
+      if (isMobileMenuOpen) return;
+
       const currentScrollY = window.scrollY;
 
       if (currentScrollY <= 10) {
@@ -34,11 +44,11 @@ function Herosection() {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
+  }, [lastScrollY, isMobileMenuOpen]);
 
   return (
     <div className="overflow-x-hidden">
-      {/* Navbar */}
+      {/* Navbar - Hide on scroll down, show on scroll up */}
       <motion.div
         className={`fixed w-full bg-black z-50 transition-transform duration-300 ${
           isNavbarVisible ? "translate-y-0" : "-translate-y-full"
@@ -46,10 +56,12 @@ function Herosection() {
         initial={{ y: 0 }}
       >
         <div className="px-[20px] md:px-[111px] py-[20px] md:py-[25px] font-inknut flex justify-between items-center">
+          {/* Logo */}
           <div className="text-[24px] sm:text-[36px] font-bold text-[#FFA13B]">
             UltraFitness
           </div>
 
+          {/* Desktop Navigation */}
           <div className="hidden md:flex space-x-[45px]">
             {elements.map((element, index) => (
               <li
@@ -61,6 +73,7 @@ function Herosection() {
             ))}
           </div>
 
+          {/* Mobile Hamburger Icon */}
           <div className="md:hidden z-50" onClick={toggleMobileMenu}>
             <div className="flex flex-col justify-center items-center space-y-2 cursor-pointer">
               <motion.div
@@ -167,23 +180,24 @@ function Herosection() {
                 transition={{ delay: 0.7 }}
                 className="flex space-x-6 mt-16"
               >
-                {["facebook", "instagram", "twitter"].map((social) => (
-                  <a
-                    key={social}
-                    href="#"
-                    className="text-white hover:text-[#FFA13B] transition-colors"
-                  >
-                    <svg
-                      className="w-8 h-8"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        d={`M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z`}
-                      />
-                    </svg>
-                  </a>
-                ))}
+                <a
+                  href="#"
+                  className="text-white hover:text-[#FFA13B] transition-colors"
+                >
+                  <FaFacebook className="w-8 h-8" />
+                </a>
+                <a
+                  href="#"
+                  className="text-white hover:text-[#FFA13B] transition-colors"
+                >
+                  <FaInstagram className="w-8 h-8" />
+                </a>
+                <a
+                  href="#"
+                  className="text-white hover:text-[#FFA13B] transition-colors"
+                >
+                  <FaTwitter className="w-8 h-8" />
+                </a>
               </motion.div>
             </motion.div>
           </motion.div>
@@ -192,6 +206,8 @@ function Herosection() {
 
       {/* Hero Section */}
       <div className="pt-20">
+        {" "}
+        {/* Add padding to account for fixed navbar */}
         <div
           className="relative"
           style={{
