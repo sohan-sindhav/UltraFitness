@@ -24,7 +24,7 @@ function Navbar() {
           {/* Logo */}
           <Link
             to="/"
-            className="text-[24px] sm:text-[36px] font-bold text-[#FFA13B]"
+            className="text-[24px] sm:text-[36px] font-bold text-[#FFA13B] hover:scale-105 transition-transform duration-200"
           >
             UltraFitness
           </Link>
@@ -32,25 +32,51 @@ function Navbar() {
           {/* Desktop Navigation */}
           <div className="hidden md:flex space-x-[45px]">
             {elements.map((element, index) => (
-              <Link
+              <motion.div
                 key={index}
-                to={element.path}
-                className="text-[22px] text-white hover:text-[#FFA13B] hover:cursor-pointer transition-all list-none"
+                className="relative group"
+                whileHover={{ scale: 1.05 }}
               >
-                {element.name}
-              </Link>
+                <Link
+                  to={element.path}
+                  className="text-[22px] text-white hover:text-[#FFA13B] transition-colors duration-200 relative"
+                >
+                  {element.name}
+                  {/* Animated underline */}
+                  <motion.span
+                    className="absolute left-0 bottom-0 h-[2px] bg-[#FFA13B]"
+                    initial={{ width: 0 }}
+                    whileHover={{ width: "100%" }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
+                  />
+                </Link>
+              </motion.div>
             ))}
           </div>
 
-          {/* Mobile Hamburger Icon - Only shows when menu is closed */}
+          {/* Mobile Hamburger Icon */}
           {!isMobileMenuOpen && (
-            <div className="md:hidden z-50" onClick={toggleMobileMenu}>
+            <motion.div
+              className="md:hidden z-50"
+              onClick={toggleMobileMenu}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
               <div className="flex flex-col justify-center items-center space-y-2 cursor-pointer">
-                <div className="w-6 h-1 bg-white"></div>
-                <div className="w-6 h-1 bg-white"></div>
-                <div className="w-6 h-1 bg-white"></div>
+                <motion.div
+                  className="w-6 h-1 bg-white"
+                  animate={{ rotate: 0 }}
+                />
+                <motion.div
+                  className="w-6 h-1 bg-white"
+                  animate={{ opacity: 1 }}
+                />
+                <motion.div
+                  className="w-6 h-1 bg-white"
+                  animate={{ rotate: 0 }}
+                />
               </div>
-            </div>
+            </motion.div>
           )}
         </div>
       </div>
@@ -68,10 +94,12 @@ function Navbar() {
             {/* Gradient Background */}
             <div className="absolute inset-0 bg-gradient-to-br from-black via-[#1a120a] to-[#332211] opacity-95"></div>
 
-            {/* Single Close Button */}
-            <button
+            {/* Close Button */}
+            <motion.button
               onClick={toggleMobileMenu}
               className="absolute top-6 right-6 text-white z-50"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -87,7 +115,7 @@ function Navbar() {
                   d="M6 18L18 6M6 6l12 12"
                 />
               </svg>
-            </button>
+            </motion.button>
 
             {/* Menu Content */}
             <motion.div
@@ -104,7 +132,7 @@ function Navbar() {
               >
                 <Link
                   to="/"
-                  className="text-[32px] font-bold text-[#FFA13B]"
+                  className="text-[32px] font-bold text-[#FFA13B] hover:scale-105 transition-transform duration-200"
                   onClick={toggleMobileMenu}
                 >
                   UltraFitness
@@ -123,11 +151,17 @@ function Navbar() {
                   >
                     <Link
                       to={element.path}
-                      className="block text-center py-4 text-2xl font-medium text-white hover:text-[#FFA13B] transition-all
-                      border-b border-gray-700 hover:border-[#FFA13B]"
+                      className="relative block text-center py-4 text-2xl font-medium text-white hover:text-[#FFA13B] transition-all"
                       onClick={toggleMobileMenu}
                     >
                       {element.name}
+                      {/* Mobile menu underline */}
+                      <motion.span
+                        className="absolute left-1/2 bottom-3 h-[2px] bg-[#FFA13B]"
+                        initial={{ width: 0, x: "-50%" }}
+                        whileHover={{ width: "80%", x: "-50%" }}
+                        transition={{ duration: 0.3 }}
+                      />
                     </Link>
                   </motion.div>
                 ))}
@@ -140,24 +174,30 @@ function Navbar() {
                 transition={{ delay: 0.7 }}
                 className="flex space-x-6 mt-16"
               >
-                <a
-                  href="#"
-                  className="text-white hover:text-[#FFA13B] transition-colors"
-                >
-                  <FaFacebook className="w-8 h-8" />
-                </a>
-                <a
-                  href="#"
-                  className="text-white hover:text-[#FFA13B] transition-colors"
-                >
-                  <FaInstagram className="w-8 h-8" />
-                </a>
-                <a
-                  href="#"
-                  className="text-white hover:text-[#FFA13B] transition-colors"
-                >
-                  <FaTwitter className="w-8 h-8" />
-                </a>
+                {[
+                  {
+                    icon: <FaFacebook className="w-8 h-8" />,
+                    color: "#3b5998",
+                  },
+                  {
+                    icon: <FaInstagram className="w-8 h-8" />,
+                    color: "#E1306C",
+                  },
+                  { icon: <FaTwitter className="w-8 h-8" />, color: "#1DA1F2" },
+                ].map((social, index) => (
+                  <motion.a
+                    key={index}
+                    href="#"
+                    className="text-white hover:text-[#FFA13B] transition-colors"
+                    whileHover={{
+                      scale: 1.2,
+                      color: "#FFA13B",
+                    }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    {social.icon}
+                  </motion.a>
+                ))}
               </motion.div>
             </motion.div>
           </motion.div>

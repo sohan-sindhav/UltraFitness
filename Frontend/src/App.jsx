@@ -1,11 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import HeroSection from "./Components/herosection";
-import GallerySection from "./Components/GallerySection"; // Updated import
+import GallerySection from "./Components/GallerySection";
 import ContactSection from "./Components/location";
 import OfferSection from "./Components/offersection";
 import TestimonialsSection from "./Components/Testimonials";
 import ScheduleSection from "./Components/Timetable";
 import Navbar from "./Components/navbar";
+import AdminLogin from "./admin/AdminLogin";
+import AdminDashboard from "./admin/AdminDashboard";
 
 const App = () => {
   return (
@@ -39,8 +41,9 @@ const App = () => {
         {/* Gallery route */}
         <Route path="/gallery" element={<GallerySection />} />
 
-        {/* Add other routes as needed */}
-        {/* <Route path="/contact" element={<ContactPage />} /> */}
+        {/* Admin routes */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
       </Routes>
     </Router>
   );
