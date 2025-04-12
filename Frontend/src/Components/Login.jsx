@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { isTokenValid } from "../Utils/IsTokenValid";
-const backendURL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
 // Add to your imports at the top of the file
 import { motion, AnimatePresence } from "framer-motion";
@@ -36,9 +35,13 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      await axios.post(`${backendURL}/auth/login`, formData, {
-        withCredentials: true,
-      });
+      await axios.post(
+        `https://ultrafitness.onrender.com/auth/login`,
+        formData,
+        {
+          withCredentials: true,
+        }
+      );
       setMessage("Access granted. Redirecting...");
       setTimeout(() => {
         navigate("/dashboard");
