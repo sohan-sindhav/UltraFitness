@@ -14,7 +14,7 @@ import uploadRoute from "./Routes/upload.js";
 
 import cookieParser from "cookie-parser";
 
-import AuthRoutes from "./routes/auth.js";
+import AuthRoutes from "./Routes/auth.js";
 const JWT_SECRET = process.env.JWT_SECRET;
 
 const app = express();
