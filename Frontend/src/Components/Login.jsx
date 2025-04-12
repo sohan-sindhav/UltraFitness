@@ -35,13 +35,9 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      await axios.post(
-        `https://ultrafitness.onrender.com/auth/login`,
-        formData,
-        {
-          withCredentials: true,
-        }
-      );
+      await axios.post(`https://localhost:10000/auth/login`, formData, {
+        withCredentials: true,
+      });
       setMessage("Access granted. Redirecting...");
       setTimeout(() => {
         navigate("/dashboard");
