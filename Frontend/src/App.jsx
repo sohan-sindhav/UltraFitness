@@ -1,4 +1,10 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+
 import HeroSection from "./Components/herosection";
 import GallerySection from "./Components/GallerySection";
 import ContactSection from "./Components/location";
@@ -6,15 +12,17 @@ import OfferSection from "./Components/offersection";
 import TestimonialsSection from "./Components/Testimonials";
 import ScheduleSection from "./Components/Timetable";
 import Navbar from "./Components/navbar";
-import AdminLogin from "./admin/AdminLogin";
-import AdminDashboard from "./admin/AdminDashboard";
+import Dashboard from "./Components/AdminDashboard";
+import PrivateRoute from "./Components/PrivateRoute";
+
+import Login from "./Components/Login";
 
 const App = () => {
   return (
     <Router>
       <Navbar />
       <Routes>
-        {/* Home route with all sections */}
+        {/* Home route */}
         <Route
           path="/"
           element={
@@ -37,13 +45,16 @@ const App = () => {
             </div>
           }
         />
-
         {/* Gallery route */}
         <Route path="/gallery" element={<GallerySection />} />
-
         {/* Admin routes */}
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        {/* Catch-all route */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+        //admin dashboard routes
+        <Route path="/login" element={<Login />} />
+        <Route element={<PrivateRoute />}>
+          <Route path="/dashboard/*" element={<Dashboard />} />
+        </Route>
       </Routes>
     </Router>
   );
