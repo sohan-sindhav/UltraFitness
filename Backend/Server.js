@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 dotenv.config();
 const PORT = process.env.PORT;
-import DBconnect from "./db/DBconnect.js";
+import DBconnect from "./DB/DBconnect.js";
 import cors from "cors";
 
 import path from "path";
@@ -14,7 +14,7 @@ import uploadRoute from "./routes/upload.js";
 
 import cookieParser from "cookie-parser";
 
-import AuthRoutes from "./routes/auth.js";
+import AuthRoutes from "./Routes/auth.js";
 const JWT_SECRET = process.env.JWT_SECRET;
 
 const app = express();
