@@ -8,7 +8,7 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 
-import uploadRoute from "./routes/upload.js";
+import uploadRoute from "./Routes/upload.js";
 
 //parsing cookies
 
