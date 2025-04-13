@@ -28,7 +28,7 @@ const DashboardLayout = () => {
   const handleLogout = async () => {
     try {
       await axios.post(
-        "https://ultrafitness.onrender.com//auth/logout",
+        "https://ultrafitness.onrender.com/auth/logout",
         {},
         {
           withCredentials: true,
