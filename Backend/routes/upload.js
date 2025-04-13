@@ -3,6 +3,7 @@ import multer from "multer";
 import streamifier from "streamifier";
 import cloudinary from "../Utils/cloudinary.js";
 import GalleryImage from "../models/GalleryImages.js";
+import mongoose from "mongoose";
 
 const router = express.Router();
 
