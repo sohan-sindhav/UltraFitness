@@ -46,7 +46,10 @@ const GalleryUploader = () => {
 
     try {
       setIsUploading(true);
-      setUploadProgress(0);
+
+      // Create abort controller for timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 60000);
 
       const response = await axios.post(
         "https://ultrafitness.onrender.com/api/upload",
@@ -56,15 +59,11 @@ const GalleryUploader = () => {
             "Content-Type": "multipart/form-data",
           },
           withCredentials: true,
-          timeout: 30000, // 30 seconds timeout
-          onUploadProgress: (progressEvent) => {
-            const percentCompleted = Math.round(
-              (progressEvent.loaded * 100) / progressEvent.total
-            );
-            setUploadProgress(percentCompleted);
-          },
+          signal: controller.signal,
         }
       );
+
+      clearTimeout(timeoutId);
 
       if (response.data.image?.imageUrl) {
         setImageUrl(response.data.image.imageUrl);
@@ -74,17 +73,17 @@ const GalleryUploader = () => {
       }
     } catch (error) {
       console.error("Upload error:", error);
-      const errorMessage =
-        error.response?.data?.error ||
-        error.message ||
-        "Upload failed. Please try again.";
-      alert(`Error: ${errorMessage}`);
+      if (error.code === "ECONNABORTED") {
+        alert("Upload timed out. Please try a smaller file.");
+      } else {
+        alert(
+          error.response?.data?.error || "Upload failed. Please try again."
+        );
+      }
     } finally {
       setIsUploading(false);
-      setUploadProgress(0);
     }
   };
-
   return (
     <div className="min-h-screen bg-gray-900 flex items-center justify-center p-6">
       <motion.div

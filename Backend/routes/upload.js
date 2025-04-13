@@ -24,17 +24,42 @@ const upload = multer({
 });
 
 router.post("/upload", upload.single("image"), async (req, res) => {
+  console.log("\n===== NEW UPLOAD REQUEST RECEIVED =====");
+  console.log("Headers:", req.headers);
+  console.log("Request body keys:", Object.keys(req.body));
+
   try {
     // Validate input
     if (!req.file) {
+      console.log("ERROR: No file received in upload");
       return res.status(400).json({ error: "No image file provided" });
     }
 
+    console.log("File received:", {
+      originalname: req.file.originalname,
+      mimetype: req.file.mimetype,
+      size: `${(req.file.size / 1024 / 1024).toFixed(2)}MB`,
+      bufferLength: req.file.buffer.length,
+    });
+
     if (!req.body.title || !req.body.tag) {
+      console.log("ERROR: Missing title or tag", {
+        title: req.body.title,
+        tag: req.body.tag,
+      });
       return res.status(400).json({ error: "Title and tag are required" });
     }
 
+    console.log("Cloudinary config verification:", {
+      cloud_name: !!cloudinary.config().cloud_name,
+      api_key: !!cloudinary.config().api_key,
+      api_secret: !!cloudinary.config().api_secret,
+    });
+
     // Upload to Cloudinary
+    console.log("Starting Cloudinary upload...");
+    const uploadStartTime = Date.now();
+
     const uploadResult = await new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
@@ -42,15 +67,46 @@ router.post("/upload", upload.single("image"), async (req, res) => {
           resource_type: "image",
         },
         (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
+          const uploadTime = Date.now() - uploadStartTime;
+          if (error) {
+            console.error(
+              "Cloudinary upload failed after",
+              uploadTime,
+              "ms:",
+              error
+            );
+            reject(error);
+          } else {
+            console.log("Cloudinary upload completed in", uploadTime, "ms");
+            console.log("Cloudinary result:", {
+              url: result.secure_url,
+              bytes: result.bytes,
+              format: result.format,
+            });
+            resolve(result);
+          }
         }
       );
 
-      streamifier.createReadStream(req.file.buffer).pipe(uploadStream);
+      console.log("Creating read stream from buffer");
+      const readStream = streamifier.createReadStream(req.file.buffer);
+
+      readStream.on("error", (err) => {
+        console.error("Read stream error:", err);
+        reject(err);
+      });
+
+      uploadStream.on("error", (err) => {
+        console.error("Upload stream error:", err);
+        reject(err);
+      });
+
+      console.log("Piping to Cloudinary...");
+      readStream.pipe(uploadStream);
     });
 
     // Save to database
+    console.log("Saving to database...");
     const newImage = new GalleryImage({
       title: req.body.title,
       tag: req.body.tag,
@@ -58,14 +114,19 @@ router.post("/upload", upload.single("image"), async (req, res) => {
     });
 
     await newImage.save();
+    console.log("Database save complete");
 
     // Return success response
+    console.log("Upload process completed successfully");
     res.status(200).json({
       message: "Image uploaded successfully",
       image: newImage,
     });
   } catch (error) {
-    console.error("Upload error:", error);
+    console.error("\n===== UPLOAD ERROR =====");
+    console.error("Error occurred:", error);
+    console.error("Error stack:", error.stack);
+    console.error("Full error object:", JSON.stringify(error, null, 2));
 
     // Handle specific errors
     let statusCode = 500;
@@ -88,7 +149,6 @@ router.post("/upload", upload.single("image"), async (req, res) => {
     });
   }
 });
-
 router.get("/gallery", async (req, res) => {
   try {
     const images = await GalleryImage.find().sort({ createdAt: -1 });
