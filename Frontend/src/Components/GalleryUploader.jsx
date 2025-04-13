@@ -10,6 +10,7 @@ const GalleryUploader = () => {
   });
   const [imageUrl, setImageUrl] = useState("");
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   const tags = [
     "equipment",
@@ -22,7 +23,12 @@ const GalleryUploader = () => {
   ];
 
   const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
+    const file = e.target.files[0];
+    if (file && file.size > 5 * 1024 * 1024) {
+      alert("File size too large (max 5MB)");
+      return;
+    }
+    setImage(file);
   };
 
   const handleFormChange = (e) => {
@@ -40,6 +46,8 @@ const GalleryUploader = () => {
 
     try {
       setIsUploading(true);
+      setUploadProgress(0);
+
       const response = await axios.post(
         "https://ultrafitness.onrender.com/api/upload",
         formData,
@@ -48,6 +56,13 @@ const GalleryUploader = () => {
             "Content-Type": "multipart/form-data",
           },
           withCredentials: true,
+          timeout: 30000, // 30 seconds timeout
+          onUploadProgress: (progressEvent) => {
+            const percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            setUploadProgress(percentCompleted);
+          },
         }
       );
 
@@ -58,10 +73,15 @@ const GalleryUploader = () => {
         setImage(null);
       }
     } catch (error) {
-      console.error("Error uploading image:", error);
-      alert("Upload failed. Please try again.");
+      console.error("Upload error:", error);
+      const errorMessage =
+        error.response?.data?.error ||
+        error.message ||
+        "Upload failed. Please try again.";
+      alert(`Error: ${errorMessage}`);
     } finally {
       setIsUploading(false);
+      setUploadProgress(0);
     }
   };
 
@@ -87,7 +107,7 @@ const GalleryUploader = () => {
           {/* File Input */}
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-300">
-              Select Image
+              Select Image (max 5MB)
             </label>
             <div className="flex items-center justify-between bg-gray-700 rounded-lg p-2">
               <span className="text-gray-400 text-sm truncate mr-2">
@@ -99,6 +119,7 @@ const GalleryUploader = () => {
                   type="file"
                   className="hidden"
                   onChange={handleImageChange}
+                  accept="image/*"
                 />
               </label>
             </div>
@@ -116,6 +137,7 @@ const GalleryUploader = () => {
               onChange={handleFormChange}
               className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-white transition-all"
               placeholder="Enter a descriptive title"
+              required
             />
           </div>
 
@@ -129,6 +151,7 @@ const GalleryUploader = () => {
               value={form.tag}
               onChange={handleFormChange}
               className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-white appearance-none"
+              required
             >
               <option value="">Select a category</option>
               {tags.map((tag) => (
@@ -152,29 +175,37 @@ const GalleryUploader = () => {
             }`}
           >
             {isUploading ? (
-              <span className="flex items-center justify-center">
-                <svg
-                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-                Uploading...
-              </span>
+              <div className="flex flex-col items-center">
+                <div className="flex items-center">
+                  <svg
+                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  Uploading... {uploadProgress}%
+                </div>
+                <div className="w-full bg-gray-600 rounded-full h-2.5 mt-2">
+                  <div
+                    className="bg-blue-500 h-2.5 rounded-full"
+                    style={{ width: `${uploadProgress}%` }}
+                  ></div>
+                </div>
+              </div>
             ) : (
               "Upload Image"
             )}
