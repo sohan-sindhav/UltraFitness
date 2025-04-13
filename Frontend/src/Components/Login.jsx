@@ -36,7 +36,7 @@ const Login = () => {
 
     try {
       await axios.post(
-        `https://ultrafitness.onrender.com:10000/auth/login`,
+        `https://ultrafitness.onrender.com/auth/login`,
         formData,
         {
           withCredentials: true,
