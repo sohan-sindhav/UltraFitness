@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { isTokenValid } from "../Utils/IsTokenValid";
-
-// Add to your imports at the top of the file
 import { motion, AnimatePresence } from "framer-motion";
 
 const Login = () => {
@@ -158,6 +156,20 @@ const Login = () => {
                 )}
               </motion.button>
             </form>
+
+            {/* Go to Homepage Link - New Addition */}
+            <motion.div
+              whileHover={{ x: 3 }}
+              transition={{ type: "spring", stiffness: 300 }}
+              className="text-center"
+            >
+              <button
+                onClick={() => navigate("/")}
+                className="text-gray-400 hover:text-orange-300 text-sm transition-colors"
+              >
+                ← Go to Homepage
+              </button>
+            </motion.div>
 
             {/* Status Messages */}
             <AnimatePresence>
