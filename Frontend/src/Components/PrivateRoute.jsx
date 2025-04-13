@@ -9,9 +9,12 @@ const PrivateRoute = () => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/auth/verify", {
-          withCredentials: true,
-        });
+        const res = await axios.get(
+          "https://ultrafitness.onrender.com/auth/verify",
+          {
+            withCredentials: true,
+          }
+        );
         setIsValid(res.data.valid);
       } catch (err) {
         setIsValid(false);

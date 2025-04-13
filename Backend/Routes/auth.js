@@ -47,10 +47,11 @@ router.post("/login", async (req, res) => {
     // Set HTTP-only cookie
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // true for production
-      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
-      maxAge: 3600000,
-      domain: ".onrender.com",
+      secure: true, // Must be true for HTTPS
+      sameSite: "none", // Required for cross-origin
+      maxAge: 3600000, // 1 hour
+      path: "/", // Available to all paths
+      // domain: 'ultrafitness.onrender.com' // Try without this first
     });
 
     res.status(200).json({

@@ -21,14 +21,9 @@ const app = express();
 app.use(cookieParser());
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // allow requests with no origin (like mobile apps or curl)
-      if (!origin) return callback(null, true);
-      return callback(null, origin); // reflect the origin
-    },
+    origin: "https://ultrafitness.onrender.com",
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: ["set-cookie"],
   })
 );
 
