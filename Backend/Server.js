@@ -21,7 +21,7 @@ const app = express();
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "https://ultrafitness.onrender.com",
+    origin: ["https://ultrafitness.onrender.com", "http://localhost:5173"],
     credentials: true,
     exposedHeaders: ["set-cookie"],
   })

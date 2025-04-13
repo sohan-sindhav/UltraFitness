@@ -25,8 +25,6 @@ const upload = multer({
 
 router.post("/upload", upload.single("image"), async (req, res) => {
   console.log("\n===== NEW UPLOAD REQUEST RECEIVED =====");
-  console.log("Headers:", req.headers);
-  console.log("Request body keys:", Object.keys(req.body));
 
   try {
     // Validate input
@@ -35,75 +33,31 @@ router.post("/upload", upload.single("image"), async (req, res) => {
       return res.status(400).json({ error: "No image file provided" });
     }
 
-    console.log("File received:", {
-      originalname: req.file.originalname,
-      mimetype: req.file.mimetype,
-      size: `${(req.file.size / 1024 / 1024).toFixed(2)}MB`,
-      bufferLength: req.file.buffer.length,
-    });
-
     if (!req.body.title || !req.body.tag) {
-      console.log("ERROR: Missing title or tag", {
-        title: req.body.title,
-        tag: req.body.tag,
-      });
+      console.log("ERROR: Missing title or tag");
       return res.status(400).json({ error: "Title and tag are required" });
     }
 
-    console.log("Cloudinary config verification:", {
-      cloud_name: !!cloudinary.config().cloud_name,
-      api_key: !!cloudinary.config().api_key,
-      api_secret: !!cloudinary.config().api_secret,
-    });
-
-    // Upload to Cloudinary
+    // Upload to Cloudinary using buffer method (more reliable)
     console.log("Starting Cloudinary upload...");
     const uploadStartTime = Date.now();
 
-    const uploadResult = await new Promise((resolve, reject) => {
-      const uploadStream = cloudinary.uploader.upload_stream(
-        {
-          folder: "Ultra_fitness",
-          resource_type: "image",
-        },
-        (error, result) => {
-          const uploadTime = Date.now() - uploadStartTime;
-          if (error) {
-            console.error(
-              "Cloudinary upload failed after",
-              uploadTime,
-              "ms:",
-              error
-            );
-            reject(error);
-          } else {
-            console.log("Cloudinary upload completed in", uploadTime, "ms");
-            console.log("Cloudinary result:", {
-              url: result.secure_url,
-              bytes: result.bytes,
-              format: result.format,
-            });
-            resolve(result);
-          }
-        }
-      );
+    const uploadResult = await cloudinary.uploader.upload(
+      `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`,
+      {
+        folder: "Ultra_fitness",
+        resource_type: "image",
+      }
+    );
 
-      console.log("Creating read stream from buffer");
-      const readStream = streamifier.createReadStream(req.file.buffer);
+    console.log(
+      `Cloudinary upload completed in ${Date.now() - uploadStartTime}ms`
+    );
 
-      readStream.on("error", (err) => {
-        console.error("Read stream error:", err);
-        reject(err);
-      });
-
-      uploadStream.on("error", (err) => {
-        console.error("Upload stream error:", err);
-        reject(err);
-      });
-
-      console.log("Piping to Cloudinary...");
-      readStream.pipe(uploadStream);
-    });
+    // Verify database connection before saving
+    if (mongoose.connection.readyState !== 1) {
+      throw new Error("Database connection not ready");
+    }
 
     // Save to database
     console.log("Saving to database...");
@@ -117,18 +71,15 @@ router.post("/upload", upload.single("image"), async (req, res) => {
     console.log("Database save complete");
 
     // Return success response
-    console.log("Upload process completed successfully");
     res.status(200).json({
       message: "Image uploaded successfully",
       image: newImage,
     });
   } catch (error) {
     console.error("\n===== UPLOAD ERROR =====");
-    console.error("Error occurred:", error);
-    console.error("Error stack:", error.stack);
-    console.error("Full error object:", JSON.stringify(error, null, 2));
+    console.error("Error:", error.message);
+    console.error("Stack:", error.stack);
 
-    // Handle specific errors
     let statusCode = 500;
     let errorMessage = "Upload failed";
 
@@ -138,8 +89,13 @@ router.post("/upload", upload.single("image"), async (req, res) => {
     } else if (error.message.includes("image files")) {
       statusCode = 400;
       errorMessage = "Only image files are allowed";
-    } else if (error.message.includes("Cloudinary")) {
+    } else if (
+      error.message.includes("Cloudinary") ||
+      error.message.includes("upload")
+    ) {
       errorMessage = "Image upload service error";
+    } else if (error.message.includes("Database")) {
+      errorMessage = "Database operation failed";
     }
 
     res.status(statusCode).json({
@@ -149,6 +105,7 @@ router.post("/upload", upload.single("image"), async (req, res) => {
     });
   }
 });
+
 router.get("/gallery", async (req, res) => {
   try {
     const images = await GalleryImage.find().sort({ createdAt: -1 });
