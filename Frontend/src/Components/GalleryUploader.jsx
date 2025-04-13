@@ -41,7 +41,7 @@ const GalleryUploader = () => {
     try {
       setIsUploading(true);
       const response = await axios.post(
-        "http://localhost:5000/api/upload",
+        "https://ultrafitness.onrender.com//api/upload",
         formData,
         {
           headers: {
