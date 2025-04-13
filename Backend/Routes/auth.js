@@ -50,8 +50,7 @@ router.post("/login", async (req, res) => {
       secure: process.env.NODE_ENV === "production", // true for production
       sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
       maxAge: 3600000,
-      domain:
-        process.env.NODE_ENV === "production" ? "yourdomain.com" : "localhost",
+      domain: ".onrender.com",
     });
 
     res.status(200).json({
